@@ -70,14 +70,28 @@ function alert {
     log_message "$message"  # Log the alert
 }
 
-# Function to display a motivational anime quote
+# Random Meaningful Anime Quote (with Itachi and Madara's quotes on top)
 function display_anime_quote {
-    quotes=("“When you give up, that’s when the game is over.” – Kuroko Tetsuya, Kuroko no Basket"
+    echo -e "\n\e[1;33mRandom Anime Quote:\e[0m"
+    quotes=("“The world isn't perfect. But it's there for us, doing the best it can... that's what makes it so damn beautiful.” – Roy Mustang, Fullmetal Alchemist: Brotherhood"
+            "“A lesson without pain is meaningless. That’s because no one can gain without sacrificing something. But by enduring that pain and overcoming it, he shall obtain a powerful, unmatched heart.” – Edward Elric, Fullmetal Alchemist"
+            "“When you give up, that’s when the game is over.” – Kuroko Tetsuya, Kuroko no Basket"
             "“To know sorrow is not terrifying. What is terrifying is to know you can’t go back to happiness you could have.” – Hinata Shoyo, Haikyuu!!"
             "“If you don’t take risks, you can’t create a future!” – Monkey D. Luffy, One Piece"
+            "“The things that are most important aren't written in books. They can't be seen or touched. They must be felt with the heart.” – Hinata Hyuga, Naruto"
             "“You should enjoy the little detours. Sometimes they take you to the best places.” – Inuyasha, Inuyasha"
+            "“The only thing we’re allowed to do is believe that we won’t regret the choice we made.” – Levi Ackerman, Attack on Titan"
+            "“No matter how deep the night, it always turns to day, eventually.” – Brook, One Piece"
+            "“If you don’t fight, you can’t win!” – Ikki Kurogane, Rakudai Kishi no Cavalry"
+            "“Those who forgive themselves, and are able to accept their true nature... They are the strong ones.” – Itachi Uchiha, Naruto"
+            "“People’s lives don’t end when they die, it ends when they lose faith.” – Itachi Uchiha, Naruto"
+            "“The next generation will always surpass the previous one. It’s one of the never-ending cycles in life.” – Itachi Uchiha, Naruto"
+            "“No matter how much it hurts now, someday you will look back and realize your struggles changed your life for the better.” – Itachi Uchiha, Naruto"
             "“The weak are destined to lie under the heels of the strong.” – Madara Uchiha, Naruto"
-            "“Those who forgive themselves, and are able to accept their true nature... They are the strong ones.” – Itachi Uchiha, Naruto")
+            "“If you don't share someone's pain, you can never understand them.” – Madara Uchiha, Naruto"
+            "“The world is full of lies, it’s just that we all choose to live in them.” – Madara Uchiha, Naruto"
+            "“You can't ever truly be happy if you don't accept the reality of life. You must move forward regardless of the pain.” – Madara Uchiha, Naruto"
+            "“When a man learns to love, he must bear the risk of hatred.” – Madara Uchiha, Naruto")
 
     RANDOM_QUOTE=${quotes[$RANDOM % ${#quotes[@]}]}
     echo -e "\n\e[1;34mAnime Quote:\e[0m"
