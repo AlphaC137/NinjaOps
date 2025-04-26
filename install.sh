@@ -1,5 +1,36 @@
 #!/bin/bash
 
+# NinjaOps Installer
+# This script installs NinjaOps and sets up required directories and configurations
+
+echo -e "\n\e[1;36m╔════════════════════════════════════════════════════════════╗\e[0m"
+echo -e "\e[1;36m║                 NINJAOPS INSTALLER                          ║\e[0m"
+echo -e "\e[1;36m╚════════════════════════════════════════════════════════════╝\e[0m"
+
+# Define installation paths
+INSTALL_DIR="/opt/ninjaops"
+CONFIG_DIR="/etc/ninjaops"
+BIN_DIR="/usr/local/bin"
+SCRIPT_NAME="ninjaops"
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+    echo -e "\e[1;31mPlease run as root or using sudo\e[0m"
+    exit 1
+fi
+
+# Create directories
+echo -e "\n\e[1m• Creating directories\e[0m"
+mkdir -p "$INSTALL_DIR"
+mkdir -p "$CONFIG_DIR"
+
+# Download or copy files
+echo -e "\n\e[1m• Installing NinjaOps\e[0m"
+
+# Copy main script to installation directory
+cat > "$INSTALL_DIR/ninjaops.sh" << 'EOFNINJA'
+#!/bin/bash
+
 # NinjaOps v2.0
 # A comprehensive system health monitoring and task management tool
 # Featuring anime quotes for motivation and advanced monitoring capabilities
@@ -22,7 +53,7 @@ if [ -f "$CONFIG_FILE" ]; then
     source "$CONFIG_FILE"
 else
     # Default configuration
-    cat > /tmp/ninjaops.conf << EOF
+    cat > /tmp/ninjaops.conf << EOFCONF
 # NinjaOps Configuration File
 
 # Alert thresholds (percent)
@@ -55,7 +86,7 @@ MONITOR_SERVICES=true
 MONITOR_NETWORK=true
 MONITOR_DISK_IO=true
 MONITOR_PROCESSES=true
-EOF
+EOFCONF
     sudo mv /tmp/ninjaops.conf "$CONFIG_FILE"
     echo "Default configuration created at $CONFIG_FILE"
 fi
@@ -65,7 +96,7 @@ source "$CONFIG_FILE"
 
 # Create other necessary files if they don't exist
 if [ ! -f "$SERVICES_FILE" ]; then
-    cat > /tmp/services.txt << EOF
+    cat > /tmp/services.txt << EOFSERV
 # List of critical services to monitor (one per line)
 ssh
 cron
@@ -74,26 +105,26 @@ apache2
 mysql
 postgresql
 docker
-EOF
+EOFSERV
     sudo mv /tmp/services.txt "$SERVICES_FILE"
     echo "Default services list created at $SERVICES_FILE"
 fi
 
 if [ ! -f "$NETWORK_TARGETS_FILE" ]; then
-    cat > /tmp/network_targets.txt << EOF
+    cat > /tmp/network_targets.txt << EOFNET
 # Network targets to monitor (one per line)
 8.8.8.8,Google DNS
 1.1.1.1,Cloudflare DNS
 google.com,Google
 github.com,GitHub
-EOF
+EOFNET
     sudo mv /tmp/network_targets.txt "$NETWORK_TARGETS_FILE"
     echo "Default network targets created at $NETWORK_TARGETS_FILE"
 fi
 
 # Ensure the quotes file exists
 if [ ! -f "$QUOTES_FILE" ]; then
-    cat > /tmp/quotes.txt << EOF
+    cat > /tmp/quotes.txt << EOFQUOTE
 "Those who forgive themselves, and are able to accept their true nature... They are the strong ones." – Itachi Uchiha, Naruto
 "People's lives don't end when they die, it ends when they lose faith." – Itachi Uchiha, Naruto
 "The next generation will always surpass the previous one. It's one of the never-ending cycles in life." – Itachi Uchiha, Naruto
@@ -114,7 +145,7 @@ if [ ! -f "$QUOTES_FILE" ]; then
 "It's not always possible to do what we want to do, but it's important to believe in something before you actually do it." – Might Guy, Naruto
 "Hard work is worthless for those that don't believe in themselves." – Naruto Uzumaki, Naruto
 "It's not the face that makes someone a monster; it's the choices they make with their lives." – Naruto Uzumaki, Naruto
-EOF
+EOFQUOTE
     sudo mv /tmp/quotes.txt "$QUOTES_FILE"
     echo "Default quotes file created at $QUOTES_FILE"
 fi
@@ -1268,5 +1299,114 @@ esac
 
 # Log the end of the script execution
 log "NinjaOps execution completed for command: ${COMMAND:-default}" "INFO"
+
+exit 0
+EOFNINJA
+
+# Make script executable
+chmod +x "$INSTALL_DIR/ninjaops.sh"
+
+# Create symlink
+echo -e "\n\e[1m• Creating symlink\e[0m"
+ln -sf "$INSTALL_DIR/ninjaops.sh" "$BIN_DIR/$SCRIPT_NAME"
+
+# Create default configuration files
+echo -e "\n\e[1m• Creating configuration files\e[0m"
+
+# Default config
+cat > "$CONFIG_DIR/config.conf" << EOF
+# NinjaOps Configuration File
+
+# Alert thresholds (percent)
+CPU_THRESHOLD=85
+MEMORY_THRESHOLD=85
+DISK_THRESHOLD=90
+
+# Log file settings
+LOG_FILE="/var/log/ninjaops.log"
+LOG_LEVEL="INFO"
+LOG_MAX_SIZE=10
+
+# Alert settings
+ENABLE_EMAIL_ALERTS=false
+ALERT_EMAIL="admin@example.com"
+SMTP_SERVER="smtp.example.com"
+SMTP_PORT=587
+SMTP_USER="user@example.com"
+SMTP_PASSWORD="password"
+
+# Maintenance settings
+AUTO_CLEANUP=true
+CLEANUP_TEMP_FILES=true
+CLEANUP_PACKAGE_CACHE=true
+AUTO_SECURITY_UPDATES=false
+
+# Monitoring settings
+CHECK_INTERVAL=300
+MONITOR_SERVICES=true
+MONITOR_NETWORK=true
+MONITOR_DISK_IO=true
+MONITOR_PROCESSES=true
+EOF
+
+# Default services list
+cat > "$CONFIG_DIR/services.txt" << EOF
+# List of critical services to monitor (one per line)
+ssh
+cron
+nginx
+apache2
+mysql
+postgresql
+docker
+EOF
+
+# Default network targets
+cat > "$CONFIG_DIR/network_targets.txt" << EOF
+# Network targets to monitor (one per line)
+8.8.8.8,Google DNS
+1.1.1.1,Cloudflare DNS
+google.com,Google
+github.com,GitHub
+EOF
+
+# Default quotes file
+cat > "$CONFIG_DIR/quotes.txt" << EOF
+"Those who forgive themselves, and are able to accept their true nature... They are the strong ones." – Itachi Uchiha, Naruto
+"People's lives don't end when they die, it ends when they lose faith." – Itachi Uchiha, Naruto
+"The next generation will always surpass the previous one. It's one of the never-ending cycles in life." – Itachi Uchiha, Naruto
+"The weak are destined to lie under the heels of the strong." – Madara Uchiha, Naruto
+"If you don't share someone's pain, you can never understand them." – Madara Uchiha, Naruto
+"The world isn't perfect. But it's there for us, doing the best it can... that's what makes it so damn beautiful." – Roy Mustang, Fullmetal Alchemist: Brotherhood
+"A lesson without pain is meaningless. That's because no one can gain without sacrificing something." – Edward Elric, Fullmetal Alchemist
+"When you give up, that's when the game is over." – Kuroko Tetsuya, Kuroko no Basket
+"If you don't take risks, you can't create a future!" – Monkey D. Luffy, One Piece
+"No matter how deep the night, it always turns to day, eventually." – Brook, One Piece
+"The only thing we're allowed to do is believe that we won't regret the choice we made." – Levi Ackerman, Attack on Titan
+"Sometimes I do feel like I'm a failure. Like there's no hope for me. But even so, I'm not gonna give up. Ever!" – Izuku Midoriya, My Hero Academia
+"Power isn't determined by your size, but by the size of your heart and dreams!" – Monkey D. Luffy, One Piece
+"The world isn't perfect, but it's there for us, trying the best it can." – Setsuko Meioh, Sailor Moon
+"I'll leave tomorrow's problems to tomorrow's me." – Saitama, One Punch Man
+"Being alone is more painful than getting hurt." – Monkey D. Luffy, One Piece
+"If you don't like your destiny, don't accept it." – Naruto Uzumaki, Naruto
+"It's not always possible to do what we want to do, but it's important to believe in something before you actually do it." – Might Guy, Naruto
+"Hard work is worthless for those that don't believe in themselves." – Naruto Uzumaki, Naruto
+"It's not the face that makes someone a monster; it's the choices they make with their lives." – Naruto Uzumaki, Naruto
+EOF
+
+# Create log file
+touch "/var/log/ninjaops.log"
+chmod 644 "/var/log/ninjaops.log"
+
+echo -e "\n\e[1;32m✓ NinjaOps installation completed!\e[0m"
+echo -e "\n\e[1mYou can now run:\e[0m $SCRIPT_NAME help"
+echo -e "\e[1mOr setup NinjaOps with:\e[0m $SCRIPT_NAME setup"
+
+# Ask about running setup wizard
+echo -e "\n\e[1mWould you like to run the setup wizard now? (y/n)\e[0m"
+read -r run_setup
+if [[ "$run_setup" =~ ^[Yy]$ ]]; then
+    "$BIN_DIR/$SCRIPT_NAME" setup
+fi
 
 exit 0

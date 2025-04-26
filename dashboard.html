@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NinjaOps Dashboard</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #c0392b;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        header .subtitle {
+            opacity: 0.8;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 8px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .card h2 i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .metric {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .metric-value.good {
+            color: var(--success);
+        }
+        
+        .metric-value.warning {
+            color: var(--warning);
+        }
+        
+        .metric-value.danger {
+            color: var(--danger);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+        
+        .progress-fill.good {
+            background-color: var(--success);
+        }
+        
+        .progress-fill.warning {
+            background-color: var(--warning);
+        }
+        
+        .progress-fill.danger {
+            background-color: var(--danger);
+        }
+        
+        .services-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .services-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .services-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .service-name {
+            font-weight: bold;
+        }
+        
+        .service-status {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .service-status.running {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .service-status.stopped {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th, table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        table th {
+            color: var(--primary);
+        }
+        
+        .refresh-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .refresh-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .anime-quote {
+            font-style: italic;
+            padding: 20px;
+            background-color: var(--light);
+            border-radius: 8px;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .anime-quote:before {
+            content: """;
+            font-size: 60px;
+            color: rgba(0,0,0,0.1);
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            line-height: 1;
+        }
+        
+        .quote-text {
+            margin-bottom: 10px;
+            padding-left: 30px;
+            font-size: 18px;
+            color: var(--dark);
+        }
+        
+        .quote-author {
+            text-align: right;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>NinjaOps Dashboard</h1>
+                <div class="subtitle">System monitoring with anime wisdom</div>
+            </div>
+            <div class="logo">忍Ops</div>
+        </header>
+        
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2><i class="fas fa-server"></i> System Information</h2>
+                <div class="metric-grid">
+                    <div class="metric">
+                        <div class="metric-label">Hostname</div>
+                        <div class="metric-value" id="hostname">ninja-server</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Operating System</div>
+                        <div class="metric-value" id="os">Ubuntu 22.04 LTS</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Kernel</div>
+                        <div class="metric-value" id="kernel">5.15.0-56-generic</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Uptime</div>
+                        <div class="metric-value" id="uptime">5 days, 6 hours</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-microchip"></i> CPU & Memory</h2>
+                <div class="metric">
+                    <div class="metric-label">CPU Usage</div>
+                    <div class="metric-value" id="cpu-usage">25.3%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill good" style="width: 25.3%"></div>
+                    </div>
+                </div>
+                
+                <div class="metric" style="margin-top: 15px;">
+                    <div class="metric-label">Memory Usage</div>
+                    <div class="metric-value" id="memory-usage">42.8%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill good" style="width: 42.8%"></div>
+                    </div>
+                </div>
+                
+                <div class="metric" style="margin-top: 15px;">
+                    <div class="metric-label">Load Average</div>
+                    <div class="metric-value" id="load-average">0.45, 0.52, 0.50</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-hdd"></i> Disk Usage</h2>
+                <div class="metric">
+                    <div class="metric-label">/ (root)</div>
+                    <div class="metric-value" id="root-disk-usage">33.7%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill good" style="width: 33.7%"></div>
+                    </div>
+                </div>
+                
+                <div class="metric" style="margin-top: 15px;">
+                    <div class="metric-label">/home</div>
+                    <div class="metric-value" id="home-disk-usage">51.2%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill warning" style="width: 51.2%"></div>
+                    </div>
+                </div>
+                
+                <div class="metric" style="margin-top: 15px;">
+                    <div class="metric-label">/var</div>
+                    <div class="metric-value" id="var-disk-usage">28.5%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill good" style="width: 28.5%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-cogs"></i> Services</h2>
+                <ul class="services-list">
+                    <li>
+                        <span class="service-name">nginx</span>
+                        <span class="service-status running">Running</span>
+                    </li>
+                    <li>
+                        <span class="service-name">postgresql</span>
+                        <span class="service-status running">Running</span>
+                    </li>
+                    <li>
+                        <span class="service-name">docker</span>
+                        <span class="service-status running">Running</span>
+                    </li>
+                    <li>
+                        <span class="service-name">mysql</span>
+                        <span class="service-status stopped">Stopped</span>
+                    </li>
+                    <li>
+                        <span class="service-name">apache2</span>
+                        <span class="service-status running">Running</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-network-wired"></i> Network</h2>
+                <table>
+                    <tr>
+                        <th>Target</th>
+                        <th>Status</th>
+                        <th>Response Time</th>
+                    </tr>
+                    <tr>
+                        <td>Google DNS (8.8.8.8)</td>
+                        <td><span class="service-status running">Reachable</span></td>
+                        <td>14ms</td>
+                    </tr>
+                    <tr>
+                        <td>Cloudflare DNS (1.1.1.1)</td>
+                        <td><span class="service-status running">Reachable</span></td>
+                        <td>18ms</td>
+                    </tr>
+                    <tr>
+                        <td>Google (google.com)</td>
+                        <td><span class="service-status running">Reachable</span></td>
+                        <td>24ms</td>
+                    </tr>
+                    <tr>
+                        <td>GitHub (github.com)</td>
+                        <td><span class="service-status stopped">Unreachable</span></td>
+                        <td>-</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-tasks"></i> Top Processes</h2>
+                <table>
+                    <tr>
+                        <th>Process</th>
+                        <th>CPU</th>
+                        <th>Memory</th>
+                    </tr>
+                    <tr>
+                        <td>nginx</td>
+                        <td>5.2%</td>
+                        <td>3.8%</td>
+                    </tr>
+                    <tr>
+                        <td>postgresql</td>
+                        <td>2.1%</td>
+                        <td>8.6%</td>
+                    </tr>
+                    <tr>
+                        <td>python3</td>
+                        <td>1.8%</td>
+                        <td>6.4%</td>
+                    </tr>
+                    <tr>
+                        <td>chrome</td>
+                        <td>12.5%</td>
+                        <td>18.9%</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><i class="fas fa-tools"></i> Quick Actions</h2>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="refresh-btn" onclick="location.reload()">
+                    <i class="fas fa-sync-alt"></i> Refresh Dashboard
+                </button>
+                <button class="refresh-btn" style="background-color: var(--warning);">
+                    <i class="fas fa-broom"></i> Run Maintenance
+                </button>
+                <button class="refresh-btn" style="background-color: var(--success);">
+                    <i class="fas fa-file-alt"></i> Generate Report
+                </button>
+                <button class="refresh-btn" style="background-color: var(--primary);">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </div>
+        </div>
+        
+        <div class="anime-quote">
+            <div class="quote-text">
+                "The next generation will always surpass the previous one. It's one of the never-ending cycles in life."
+            </div>
+            <div class="quote-author">– Itachi Uchiha, Naruto</div>
+        </div>
+        
+        <script>
+            // API endpoint
+            const API_URL = 'http://localhost:3000/api/metrics';
+            
+            // Function to update metrics with real data
+            function updateMetrics() {
+                // Fetch real-time data from our API
+                fetch(API_URL)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Update System Information
+                        document.getElementById('hostname').innerText = data.systemInfo.hostname;
+                        document.getElementById('os').innerText = data.systemInfo.os;
+                        document.getElementById('kernel').innerText = data.systemInfo.kernel;
+                        document.getElementById('uptime').innerText = data.systemInfo.uptime;
+                        
+                        // Update CPU usage
+                        const cpuUsage = parseFloat(data.cpuUsage);
+                        document.getElementById('cpu-usage').innerText = cpuUsage + '%';
+                        const cpuFill = document.querySelector('.card:nth-child(2) .progress-fill');
+                        cpuFill.style.width = cpuUsage + '%';
+                        
+                        if (cpuUsage < 60) {
+                            cpuFill.className = 'progress-fill good';
+                            document.getElementById('cpu-usage').className = 'metric-value good';
+                        } else if (cpuUsage < 85) {
+                            cpuFill.className = 'progress-fill warning';
+                            document.getElementById('cpu-usage').className = 'metric-value warning';
+                        } else {
+                            cpuFill.className = 'progress-fill danger';
+                            document.getElementById('cpu-usage').className = 'metric-value danger';
+                        }
+                        
+                        // Update Memory usage
+                        const memUsage = parseFloat(data.memoryUsage);
+                        document.getElementById('memory-usage').innerText = memUsage + '%';
+                        const memFill = document.querySelector('.card:nth-child(2) .progress-fill:nth-of-type(2)');
+                        memFill.style.width = memUsage + '%';
+                        
+                        if (memUsage < 60) {
+                            memFill.className = 'progress-fill good';
+                            document.getElementById('memory-usage').className = 'metric-value good';
+                        } else if (memUsage < 85) {
+                            memFill.className = 'progress-fill warning';
+                            document.getElementById('memory-usage').className = 'metric-value warning';
+                        } else {
+                            memFill.className = 'progress-fill danger';
+                            document.getElementById('memory-usage').className = 'metric-value danger';
+                        }
+                        
+                        // Update Load Average
+                        document.getElementById('load-average').innerText = data.loadAverage;
+                        
+                        // Update Disk Usage
+                        if (data.diskUsage.root) {
+                            const rootUsage = parseFloat(data.diskUsage.root);
+                            document.getElementById('root-disk-usage').innerText = rootUsage + '%';
+                            const rootFill = document.querySelector('.card:nth-child(3) .progress-fill');
+                            rootFill.style.width = rootUsage + '%';
+                            
+                            if (rootUsage < 60) {
+                                rootFill.className = 'progress-fill good';
+                            } else if (rootUsage < 85) {
+                                rootFill.className = 'progress-fill warning';
+                            } else {
+                                rootFill.className = 'progress-fill danger';
+                            }
+                        }
+                        
+                        if (data.diskUsage.home) {
+                            const homeUsage = parseFloat(data.diskUsage.home);
+                            document.getElementById('home-disk-usage').innerText = homeUsage + '%';
+                            const homeFill = document.querySelector('.card:nth-child(3) .progress-fill:nth-of-type(2)');
+                            homeFill.style.width = homeUsage + '%';
+                            
+                            if (homeUsage < 60) {
+                                homeFill.className = 'progress-fill good';
+                            } else if (homeUsage < 85) {
+                                homeFill.className = 'progress-fill warning';
+                            } else {
+                                homeFill.className = 'progress-fill danger';
+                            }
+                        }
+                        
+                        if (data.diskUsage.var) {
+                            const varUsage = parseFloat(data.diskUsage.var);
+                            document.getElementById('var-disk-usage').innerText = varUsage + '%';
+                            const varFill = document.querySelector('.card:nth-child(3) .progress-fill:nth-of-type(3)');
+                            varFill.style.width = varUsage + '%';
+                            
+                            if (varUsage < 60) {
+                                varFill.className = 'progress-fill good';
+                            } else if (varUsage < 85) {
+                                varFill.className = 'progress-fill warning';
+                            } else {
+                                varFill.className = 'progress-fill danger';
+                            }
+                        }
+                        
+                        // Update Services
+                        if (data.servicesStatus) {
+                            const servicesList = document.querySelector('.services-list');
+                            if (servicesList) {
+                                // Clear existing list
+                                servicesList.innerHTML = '';
+                                
+                                // Add each service with its real status
+                                for (const [service, status] of Object.entries(data.servicesStatus)) {
+                                    const li = document.createElement('li');
+                                    li.innerHTML = `
+                                        <span class="service-name">${service}</span>
+                                        <span class="service-status ${status}">${status === 'running' ? 'Running' : 'Stopped'}</span>
+                                    `;
+                                    servicesList.appendChild(li);
+                                }
+                            }
+                        }
+                        
+                        // Update Network Status
+                        if (data.networkStatus) {
+                            const networkTable = document.querySelector('.card:nth-child(5) table');
+                            if (networkTable) {
+                                // Clear existing rows except header
+                                const headerRow = networkTable.rows[0];
+                                networkTable.innerHTML = '';
+                                networkTable.appendChild(headerRow);
+                                
+                                // Add each network target with its real status
+                                for (const [target, info] of Object.entries(data.networkStatus)) {
+                                    const row = networkTable.insertRow();
+                                    
+                                    const targetCell = row.insertCell(0);
+                                    targetCell.textContent = target;
+                                    
+                                    const statusCell = row.insertCell(1);
+                                    const statusSpan = document.createElement('span');
+                                    statusSpan.className = `service-status ${info.status === 'reachable' ? 'running' : 'stopped'}`;
+                                    statusSpan.textContent = info.status === 'reachable' ? 'Reachable' : 'Unreachable';
+                                    statusCell.appendChild(statusSpan);
+                                    
+                                    const responseCell = row.insertCell(2);
+                                    responseCell.textContent = info.status === 'reachable' ? info.responseTime : '-';
+                                }
+                            }
+                        }
+                        
+                        // Update Top Processes
+                        if (data.topProcesses && data.topProcesses.length > 0) {
+                            const processesTable = document.querySelector('.card:nth-child(6) table');
+                            if (processesTable) {
+                                // Clear existing rows except header
+                                const headerRow = processesTable.rows[0];
+                                processesTable.innerHTML = '';
+                                processesTable.appendChild(headerRow);
+                                
+                                // Add each process with its real metrics
+                                data.topProcesses.forEach(process => {
+                                    const row = processesTable.insertRow();
+                                    
+                                    const processCell = row.insertCell(0);
+                                    processCell.textContent = process.process;
+                                    
+                                    const cpuCell = row.insertCell(1);
+                                    cpuCell.textContent = process.cpu + '%';
+                                    
+                                    const memoryCell = row.insertCell(2);
+                                    memoryCell.textContent = process.memory + '%';
+                                });
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching metrics:', error);
+                        // If API is unavailable, show error in the dashboard
+                        document.getElementById('hostname').innerText = 'API Unavailable';
+                        document.getElementById('os').innerText = 'Connection Error';
+                    })
+                    .finally(() => {
+                        // Schedule next update
+                        setTimeout(updateMetrics, 5000);
+                    });
+            }
+            
+            // Start the updates
+            updateMetrics();
+        </script>
+    </div>
+</body>
+</html>

@@ -1,90 +1,280 @@
-# NinjaOps: The Geekdom Sentinel
-"NinjaOps: The Geekdom Sentinel" is an anime-inspired, production-grade system monitoring and maintenance tool designed for tech enthusiasts, system admins, and anime lovers. It combines essential system checks with motivational anime quotes from iconic characters like Itachi Uchiha and Madara Uchiha, ensuring your system stays optimized while adding some fun to your workday.
+# NinjaOps 🥷
 
-# Features
-# Real-time System Monitoring:
+![Version](https://img.shields.io/badge/version-2.0-blue)
+![Platform](https://img.shields.io/badge/platform-Linux-green)
+![License](https://img.shields.io/badge/license-MIT-orange)
 
-- CPU, memory, and disk space usage tracking.
-- Network statistics display.
-- Customizable Alerts:
+> A comprehensive system health monitoring and task management tool with a touch of anime wisdom.
 
-- Receive notifications when system resources exceed your set thresholds (CPU > 85%, Disk > 90%, etc.).
+## 📖 Table of Contents
 
-# Automated System Maintenance:
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Commands](#commands)
+- [Monitoring & Alerting](#monitoring--alerting)
+- [Web Dashboard](#web-dashboard)
+- [Scheduled Monitoring](#scheduled-monitoring)
+- [System Maintenance](#system-maintenance)
+- [Backup & Reporting](#backup--reporting)
+- [Dependencies](#dependencies)
+- [Contributing](#contributing)
+- [License](#license)
 
-- Cache cleanup, package updates, and disk optimization.
-- Motivational Anime Quotes:
--Get inspired by quotes from iconic anime characters during system checks.
+## 🔍 Overview
 
-# Secure Logging:
+NinjaOps is a powerful, feature-rich system monitoring and maintenance tool designed for Linux systems. It provides comprehensive system health checks, performance metrics, service monitoring, automated maintenance, and more - all with an anime-inspired twist that makes system administration less mundane.
 
-- All activities are logged securely to track system events, performance, and maintenance.
-- Command-Line Flexibility:
+Whether you're managing a single server or a fleet of systems, NinjaOps helps you stay on top of system health while occasionally delivering wisdom from your favorite anime characters.
 
-- Run specific tasks (info, check, maintenance, or quotes) with ease.
+## ✨ Features
 
-# Requirements
+- **Comprehensive Monitoring**
+  - CPU, memory, and disk usage monitoring with customizable thresholds
+  - Load average monitoring
+  - Service status checks
+  - Network connectivity testing
+  - Disk I/O statistics
+  - Process resource usage tracking
 
-- Linux-based OS (e.g., Ubuntu, Debian)
-- sudo access for maintenance tasks
-- Email or desktop notification setup for alerting (optional)
+- **Smart Alerting**
+  - Email alerts for critical issues
+  - Desktop notifications (when run in a desktop environment)
+  - Dynamic threshold adjustment based on time of day
+  - Detailed logging with multiple severity levels
 
-# Installation
-Clone the repository:
+- **Maintenance Automation**
+  - Package management (apt, dnf, yum, pacman)
+  - Security updates installation
+  - Temporary files cleanup
+  - Package cache management
+  - Large log file detection
 
-> git clone https://github.com/yourusername/ninjaops.git
+- **System Administration Tools**
+  - System backups creation
+  - Health report generation
+  - Service monitoring
+  - Scheduled execution via cron
 
-> cd ninjaops
+- **User Experience**
+  - Color-coded output for easy reading
+  - Web-based dashboard
+  - Motivational anime quotes
+  - Comprehensive help system
 
-- Make the script executable:
+## 🚀 Installation
 
-> chmod +x ninjaops.sh
+### Quick Install
 
-# Install necessary dependencies (if any):
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/NinjaOps.git
 
-> sudo apt-get install curl jq
+# Navigate to the directory
+cd NinjaOps
 
-# Usage
+# Make the script executable
+chmod +x NinjaOps.sh
 
-Run NinjaOps with the following commands:
+# Run the setup
+./NinjaOps.sh setup
+```
 
-Show system info:
+Alternatively, you can use the provided install script:
 
-> ./ninjaops.sh info
+```bash
+./install.sh
+```
 
-Check system performance (CPU, memory, disk usage):
+### Manual Installation
 
+1. Download the `NinjaOps.sh` script
+2. Make it executable: `chmod +x NinjaOps.sh`
+3. Run the setup command: `./NinjaOps.sh setup`
+4. Follow the interactive prompts to configure settings
 
->./ninjaops.sh check
+## ⚙️ Configuration
 
-Run system maintenance (clean, update, optimize):
+NinjaOps uses a configuration file located at `/etc/ninjaops/config.conf`. During initial setup, you'll be prompted to configure:
 
-> ./ninjaops.sh maintenance
+- CPU, memory, and disk threshold percentages
+- Email alert settings
+- Automatic cleanup preferences
+- Security update automation
 
-Display a motivational anime quote:
+Additional configuration files:
+- `/etc/ninjaops/services.txt` - List of critical services to monitor
+- `/etc/ninjaops/network_targets.txt` - Network connectivity targets
+- `/etc/ninjaops/quotes.txt` - Anime quotes collection
 
-> ./ninjaops.sh quote
+You can manually edit these files or run `./NinjaOps.sh setup` to reconfigure.
 
-# Customization
+## 🛠️ Usage
 
-You can modify the CPU, Memory, and Disk usage alert thresholds in the script itself. The default values are:
+### Basic Usage
 
-CPU: 85%
-Memory: 85%
-Disk: 90%
-Logging
-All actions and alerts are logged to /var/log/geekdom_monitor.log for later review. Make sure the script has write permissions to this log file.
+```bash
+./NinjaOps.sh [command] [options]
+```
 
-# Contributing
+If no command is specified, NinjaOps will run a comprehensive system check including system info, performance metrics, service status, network connectivity, and top resource-consuming processes.
 
-Feel free to fork this repository, submit pull requests, or suggest new features or improvements. Contributions are welcome!
+### Options
 
-# Credits
+- `--quiet` - Reduce output verbosity
+- `--no-color` - Disable colored output
+- `--log-level=LVL` - Set log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 
-NinjaOps combines tech with anime, making system administration a little more exciting. Inspired by the teachings of legendary anime characters like Itachi Uchiha, Madara Uchiha, and others!
+## 📋 Commands
 
-# License
-This project is licensed under the MIT License – see the LICENSE file for details.
+| Command | Description |
+|---------|-------------|
+| `info` | Display system information |
+| `check` | Check system performance metrics |
+| `services` | Check status of critical services |
+| `network` | Check network connectivity |
+| `processes` | Show top resource-consuming processes |
+| `diskio` | Display disk I/O statistics |
+| `quote` | Display a random anime quote |
+| `maintenance` | Perform system maintenance tasks |
+| `backup` | Create a system backup |
+| `report` | Generate system health report |
+| `dashboard` | Start the web dashboard |
+| `schedule` | Set up scheduled monitoring |
+| `setup` | Run initial setup and configuration |
+| `help` | Display help information |
 
+### Examples
 
+```bash
+# Check performance metrics
+./NinjaOps.sh check
 
+# Monitor service status
+./NinjaOps.sh services
+
+# Perform system maintenance
+./NinjaOps.sh maintenance
+
+# Get some anime wisdom
+./NinjaOps.sh quote
+```
+
+## 🔔 Monitoring & Alerting
+
+### Thresholds
+
+NinjaOps monitors system resources based on configurable thresholds:
+- CPU usage (default: 85%)
+- Memory usage (default: 85%)
+- Disk usage (default: 90%)
+
+Thresholds are automatically adjusted during off-hours (midnight to 6am) to reduce false alarms.
+
+### Alert Methods
+
+- **Console Output**: Color-coded status indicators
+- **Log File**: Detailed logs at `/var/log/ninjaops.log`
+- **Email Alerts**: Optional alerts for WARNING, ERROR, and CRITICAL events
+- **Desktop Notifications**: When running in a desktop environment
+
+## 🌐 Web Dashboard
+
+NinjaOps includes a simple web dashboard for visual monitoring:
+
+```bash
+./NinjaOps.sh dashboard
+```
+
+The dashboard runs on port 8080 by default (configurable) and shows:
+- System information
+- Performance metrics
+- Quick action buttons
+- An inspirational anime quote
+
+## ⏱️ Scheduled Monitoring
+
+Set up automated monitoring with:
+
+```bash
+./NinjaOps.sh schedule
+```
+
+Choose from:
+- Hourly checks
+- Daily checks (at midnight)
+- Weekly checks (Sundays)
+- Custom cron schedule
+
+The scheduler will set up a cron job to run NinjaOps automatically.
+
+## 🧹 System Maintenance
+
+Run maintenance tasks with:
+
+```bash
+./NinjaOps.sh maintenance
+```
+
+This performs:
+- Package list updates
+- Security updates (if enabled)
+- Package cache cleanup
+- Temporary file cleanup
+- Large log file detection
+
+Maintenance adapts to your system's package manager (apt, dnf, yum, pacman).
+
+## 💾 Backup & Reporting
+
+### System Backup
+
+Create system backups with:
+
+```bash
+./NinjaOps.sh backup
+```
+
+Choose to backup:
+- Home directories
+- Configuration files
+- Both
+- Custom directory selection
+
+### Health Report
+
+Generate a comprehensive system health report:
+
+```bash
+./NinjaOps.sh report
+```
+
+The report includes:
+- System information
+- Performance metrics
+- Disk usage
+- Top resource consumers
+- Service status
+- Recent system errors
+
+## 📦 Dependencies
+
+NinjaOps requires:
+- Bash
+- bc (basic calculator)
+- curl
+- iproute2
+
+Optional dependencies:
+- sysstat (for disk I/O monitoring)
+- mail command (for email alerts)
+- Python (for web dashboard)
+- notify-send (for desktop notifications)
+
+Missing dependencies will be detected and can be automatically installed during setup.
+
+## 🤝 Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
