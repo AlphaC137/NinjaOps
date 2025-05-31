@@ -70,7 +70,7 @@ Whether you're managing a single server or a fleet of systems, NinjaOps helps yo
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/NinjaOps.git
+git clone https://github.com/alphac137/NinjaOps.git
 
 # Navigate to the directory
 cd NinjaOps
